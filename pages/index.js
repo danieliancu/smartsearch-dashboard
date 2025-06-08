@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import "../styles/Dashboard.css";
 import SinonimeVizuale from "../components/SinonimeVizuale";
 import Modal from "../components/Modal";
 

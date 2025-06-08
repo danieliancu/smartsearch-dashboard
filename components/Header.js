@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 export default function Header() {
   return (
@@ -10,7 +11,7 @@ export default function Header() {
           </span>
         </div>
         <nav className="header-menu">
-          <a href="/login" className="menu-link">Login</a>
+          <Link href="/login" className="menu-link">Login</Link>
         </nav>
       </div>
     </header>

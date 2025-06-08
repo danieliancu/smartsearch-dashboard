@@ -2,6 +2,7 @@
 import Footer from "../components/Footer";
 import "../styles/Dashboard.css"; // sau unde ai tu stilurile
 
+
 export default function App({ Component, pageProps }) {
   return (
     <>

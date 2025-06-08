@@ -190,12 +190,6 @@ body {
   margin:5px !important;
 }
 
-.containerBtn {
-  display:flex;
-  flex-direction:column;
-  justify-content: space-between;
-  align-items: flex-start;
-  }
 
 
 /* HEADER & FOOTER STYLES */

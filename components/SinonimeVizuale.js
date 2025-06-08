@@ -21,10 +21,11 @@ export default function SinonimeVizuale({ initialValue = {}, onSave }) {
   const [data, setData] = useState(() => configToState(initialValue));
   const [activeIdx, setActiveIdx] = useState(0);
 
-  useEffect(() => {
-    setData(configToState(initialValue));
-    setActiveIdx(0);
-  }, [JSON.stringify(initialValue)]);
+useEffect(() => {
+  setData(configToState(initialValue));
+  setActiveIdx(0);
+}, [initialValue]);
+
 
   // Adaugă cuvânt principal
   const addMain = () => {
@@ -101,17 +102,8 @@ export default function SinonimeVizuale({ initialValue = {}, onSave }) {
 
   return (
     <div>
-      <div className="containerBtn">
         <label>Sinonime produse:</label>
-        <div>
-          <button className="add-btn" style={{ fontSize: 12 }} type="button" onClick={addMain}>
-            <AddIcon /> Adaugă cuvânt principal
-          </button>
-          <button className="save-btn" style={{ padding: 8, fontSize: 13, background: "#0070f3", color: "#fff" }} onClick={handleSave}>
-            Confirmă modificările
-          </button>
-        </div>
-      </div>
+
       <div style={{
         display: "flex",
         alignItems: "center",
@@ -228,6 +220,14 @@ export default function SinonimeVizuale({ initialValue = {}, onSave }) {
           </div>
         }
       </div>
+        <div>
+          <button className="add-btn" style={{ fontSize: 12 }} type="button" onClick={addMain}>
+            <AddIcon /> Adaugă cuvânt principal
+          </button>
+          <button className="save-btn" style={{ padding: 8, fontSize: 13, background: "#0070f3", color: "#fff" }} onClick={handleSave}>
+            Confirmă modificările
+          </button>
+        </div>
     </div>
   );
 }
