@@ -101,17 +101,14 @@ export default function SinonimeVizuale({ initialValue = {}, onSave }) {
 
   return (
     <div>
-      <div style={{
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        marginBottom: 10, gap: 20
-      }}>
+      <div className="containerBtn">
         <label>Sinonime produse:</label>
         <div>
-          <button className="add-btn" style={{ fontSize: 14 }} type="button" onClick={addMain}>
+          <button className="add-btn" style={{ fontSize: 12 }} type="button" onClick={addMain}>
             <AddIcon /> Adaugă cuvânt principal
           </button>
           <button className="save-btn" style={{ padding: 8, fontSize: 13, background: "#0070f3", color: "#fff" }} onClick={handleSave}>
-            Salvează modificările
+            Confirmă modificările
           </button>
         </div>
       </div>
@@ -131,7 +128,7 @@ export default function SinonimeVizuale({ initialValue = {}, onSave }) {
               alignItems: "center",
               background: i === activeIdx ? "#0070f3" : "#f4f8fc",
               color: i === activeIdx ? "#fff" : "#222",
-              borderRadius: 20,
+              borderRadius: 10,
               padding: "2px 14px 2px 12px",
               fontWeight: 600,
               fontSize: 15,
