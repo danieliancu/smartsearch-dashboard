@@ -4,6 +4,7 @@ const AddIcon = () => <span style={{ cursor: 'pointer', color: 'orange', fontWei
 const RemoveIcon = () => <span style={{ cursor: 'pointer', color: 'red', fontWeight: 'bold', marginLeft: 6 }}>×</span>;
 const genId = () => "_" + Math.random().toString(36).slice(2, 11);
 
+// Transformă config { main: [subs] } în state pentru componentă vizuală
 const configToState = (config) =>
   Object.entries(config || {}).map(([main, subs]) => ({
     id: genId(),
@@ -12,22 +13,30 @@ const configToState = (config) =>
     subs: (subs || []).map(s => ({ id: genId(), value: s }))
   }));
 
+// Transformă din state vizual în format de salvat în DB/API
 const stateToConfig = (stateArr) =>
   Object.fromEntries(
     stateArr.map(item => [item.main, item.subs.map(s => s.value).filter(Boolean)])
   );
 
-export default function SinonimeVizuale({ initialValue = {}, onSave }) {
-  const [data, setData] = useState(() => configToState(initialValue));
+export default function SinonimeVizuale({ initialValue = {}, onChange }) {
+  const [data, setData] = useState(configToState(initialValue));
   const [activeIdx, setActiveIdx] = useState(0);
 
-useEffect(() => {
-  setData(configToState(initialValue));
-  setActiveIdx(0);
-}, [initialValue]);
+  // Sync din afară dacă se schimbă prop initialValue
+  useEffect(() => {
+    setData(configToState(initialValue));
+    setActiveIdx(0);
+    // eslint-disable-next-line
+  }, [JSON.stringify(initialValue)]);
 
+  // Orice modificare trimite la parent (pentru config principal)
+  useEffect(() => {
+    if (onChange) onChange(stateToConfig(data));
+    // eslint-disable-next-line
+  }, [data]);
 
-  // Adaugă cuvânt principal
+  // Funcții de editare
   const addMain = () => {
     let idx = 1;
     let newKey = "";
@@ -41,20 +50,16 @@ useEffect(() => {
     setActiveIdx(0);
   };
 
-  // Șterge cuvânt principal, fără alertă
   const removeMain = (id) => {
     setData(d => {
       const idx = d.findIndex(item => item.id === id);
       const newArr = d.filter(item => item.id !== id);
-
-      // Asigurare index valid
       setActiveIdx(prev => {
         if (newArr.length === 0) return 0;
         if (prev > idx) return prev - 1;
         if (prev === idx) return Math.max(0, prev - 1);
         return prev;
       });
-
       return newArr;
     });
   };
@@ -96,14 +101,16 @@ useEffect(() => {
     )
   );
 
-  const handleSave = () => {
-    if (onSave) onSave(stateToConfig(data));
-  };
-
   return (
     <div>
+      <div className="containerBtn">
         <label>Sinonime produse:</label>
-
+        <div>
+          <button className="add-btn" style={{ fontSize: 12 }} type="button" onClick={addMain}>
+            <AddIcon /> Adaugă cuvânt principal
+          </button>
+        </div>
+      </div>
       <div style={{
         display: "flex",
         alignItems: "center",
@@ -220,14 +227,6 @@ useEffect(() => {
           </div>
         }
       </div>
-        <div>
-          <button className="add-btn" style={{ fontSize: 12 }} type="button" onClick={addMain}>
-            <AddIcon /> Adaugă cuvânt principal
-          </button>
-          <button className="save-btn" style={{ padding: 8, fontSize: 13, background: "#0070f3", color: "#fff" }} onClick={handleSave}>
-            Confirmă modificările
-          </button>
-        </div>
     </div>
   );
 }

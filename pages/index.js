@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import SinonimeVizuale from "../components/SinonimeVizuale";
 import Modal from "../components/Modal";
+import chatConfig from "../config/chatConfig";
 
+// === SIDEBAR (mutat sus) ===
 function DashboardSidebar({ groups, active, onSelect, open, onLogout, user, onSave }) {
   return (
     <aside className={"dashboard-sidebar" + (open ? " open" : "")} style={{ position: "relative" }}>
@@ -35,38 +37,35 @@ function DashboardSidebar({ groups, active, onSelect, open, onLogout, user, onSa
                 position: "absolute",
                 bottom: 0
               }}>
-              {user?.name && <div style={{ fontSize: 16 }}>{user.name}</div>}
-
-              {user?.type && (
-                <div style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  letterSpacing: 1,
-                  color: user.type === "superadmin" ? "#22c55e" : "#2563eb", // verde pentru superadmin, albastru pentru admin
-                  background: user.type === "superadmin" ? "#ecfdf5" : "#dbeafe",
-                  borderRadius: 7,
-                  display: "inline-block",
-                  textTransform: "uppercase"
-                }}>
-                  {user.type}
+                {user?.name && <div style={{ fontSize: 16 }}>{user.name}</div>}
+                {user?.type && (
+                  <div style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    letterSpacing: 1,
+                    color: user.type === "superadmin" ? "#22c55e" : "#2563eb",
+                    background: user.type === "superadmin" ? "#ecfdf5" : "#dbeafe",
+                    borderRadius: 7,
+                    display: "inline-block",
+                    textTransform: "uppercase"
+                  }}>
+                    {user.type}
+                  </div>
+                )}
+                <div style={{ fontSize: 14, color: "#38517a", wordBreak: "break-all" }}>
+                  {user?.email}
                 </div>
-              )}
-
-              <div style={{ fontSize: 14, color: "#38517a", wordBreak: "break-all" }}>
-                {user?.email}
-              </div>
-
                 <button
-                className="add-btn"
-                onClick={onSave}
-                style={{
-                  background: "#22c55e", // Tailwind green-500
-                  color: "#fff",
-                  fontSize: "14px",
-                  fontWeight: 600,
-                  margin: "18px auto 6px auto",
-                  padding: "11px 0"
-                }}
+                  className="add-btn"
+                  onClick={onSave}
+                  style={{
+                    background: "#22c55e",
+                    color: "#fff",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    margin: "18px auto 6px auto",
+                    padding: "11px 0"
+                  }}
                 >
                   Salvează
                 </button>
@@ -82,9 +81,8 @@ function DashboardSidebar({ groups, active, onSelect, open, onLogout, user, onSa
                     padding: "9px 0"
                   }}
                 >
-                Logout
+                  Logout
                 </button>
-
               </div>
             </>
           )}
@@ -94,7 +92,8 @@ function DashboardSidebar({ groups, active, onSelect, open, onLogout, user, onSa
   );
 }
 
-function DashboardGroupPanel({ group, config, onConfig, saved }) {
+// === GROUP PANEL (mutat sus) ===
+function DashboardGroupPanel({ group, config, onConfig }) {
   if (group === "products") {
     const sw = config.products.similarWords;
     return (
@@ -103,7 +102,7 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Endpoint API:</label>
           <input
             type="text"
-            value={config.products.endpoint}
+            value={config.products.endpoint || ""}
             onChange={e => onConfig("products", "endpoint", e.target.value)}
           />
         </div>
@@ -117,7 +116,7 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Limită rezultate:</label>
           <input
             type="number"
-            value={config.products.resultLimit}
+            value={config.products.resultLimit || ""}
             onChange={e => onConfig("products", "resultLimit", Number(e.target.value))}
           />
         </div>
@@ -125,14 +124,13 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Timeout (ms):</label>
           <input
             type="number"
-            value={config.products.defaultTimeout}
+            value={config.products.defaultTimeout || ""}
             onChange={e => onConfig("products", "defaultTimeout", Number(e.target.value))}
           />
         </div>
       </div>
     );
   }
-
   if (group === "ai") {
     return (
       <div>
@@ -140,7 +138,7 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Model principal:</label>
           <input
             type="text"
-            value={config.ai.model}
+            value={config.ai.model || ""}
             onChange={e => onConfig("ai", "model", e.target.value)}
           />
         </div>
@@ -148,14 +146,14 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Model explicație:</label>
           <input
             type="text"
-            value={config.ai.explanationModel}
+            value={config.ai.explanationModel || ""}
             onChange={e => onConfig("ai", "explanationModel", e.target.value)}
           />
         </div>
         <div className="config-section">
           <label>System Prompt:</label>
           <textarea
-            value={config.ai.systemPrompt}
+            value={config.ai.systemPrompt || ""}
             onChange={e => onConfig("ai", "systemPrompt", e.target.value)}
             style={{ minHeight: 90 }}
           />
@@ -163,7 +161,7 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
         <div className="config-section">
           <label>Prompt explicație:</label>
           <textarea
-            value={config.ai.explanationPrompt}
+            value={config.ai.explanationPrompt || ""}
             onChange={e => onConfig("ai", "explanationPrompt", e.target.value)}
             style={{ minHeight: 80 }}
           />
@@ -171,7 +169,6 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
       </div>
     );
   }
-
   if (group === "ui") {
     return (
       <div>
@@ -179,7 +176,7 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Titlu aplicație:</label>
           <input
             type="text"
-            value={config.ui.appTitle}
+            value={config.ui.appTitle || ""}
             onChange={e => onConfig("ui", "appTitle", e.target.value)}
           />
         </div>
@@ -187,7 +184,7 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Placeholder input:</label>
           <input
             type="text"
-            value={config.ui.inputPlaceholder}
+            value={config.ui.inputPlaceholder || ""}
             onChange={e => onConfig("ui", "inputPlaceholder", e.target.value)}
           />
         </div>
@@ -195,14 +192,13 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Text buton:</label>
           <input
             type="text"
-            value={config.ui.sendButtonText}
+            value={config.ui.sendButtonText || ""}
             onChange={e => onConfig("ui", "sendButtonText", e.target.value)}
           />
         </div>
       </div>
     );
   }
-
   if (group === "templates") {
     return (
       <div>
@@ -210,7 +206,7 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Card produs (HTML Mustache):</label>
           <textarea
             style={{ minHeight: 200 }}
-            value={config.templates.productCard.template}
+            value={config.templates.productCard.template || ""}
             onChange={e =>
               onConfig(
                 "templates",
@@ -233,14 +229,13 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
                   "productCard",
                   { ...config.templates.productCard, styles: JSON.parse(value) }
                 );
-              } catch {}
+              } catch { }
             }}
           />
         </div>
       </div>
     );
   }
-
   if (group === "fallback") {
     return (
       <div>
@@ -248,7 +243,7 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Mesaj lipsă rezultate:</label>
           <input
             type="text"
-            value={config.fallback.notFound}
+            value={config.fallback.notFound || ""}
             onChange={e => onConfig("fallback", "notFound", e.target.value)}
           />
         </div>
@@ -256,7 +251,7 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Mesaj lipsă rezultate (singular):</label>
           <input
             type="text"
-            value={config.fallback.notFoundSingle}
+            value={config.fallback.notFoundSingle || ""}
             onChange={e => onConfig("fallback", "notFoundSingle", e.target.value)}
           />
         </div>
@@ -264,88 +259,80 @@ function DashboardGroupPanel({ group, config, onConfig, saved }) {
           <label>Mesaj eroare:</label>
           <input
             type="text"
-            value={config.fallback.error}
+            value={config.fallback.error || ""}
             onChange={e => onConfig("fallback", "error", e.target.value)}
           />
         </div>
       </div>
     );
   }
-
   return <div>Selectează un grup din stânga.</div>;
 }
 
+// === COMPONENTA PRINCIPALĂ ===
 export default function Dashboard() {
   const [config, setConfig] = useState(null);
-  const [activeGroup, setActiveGroup] = useState("products");
   const [saved, setSaved] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalConfig, setModalConfig] = useState({}); // {type, title, content, onOk}
+  const [modalConfig, setModalConfig] = useState({});
+  const [activeGroup, setActiveGroup] = useState("products");
   const router = useRouter();
 
+  // INIT: Login check și config local
   useEffect(() => {
-    import("../config/chatConfig").then((mod) => setConfig(mod.default));
-    fetch("/api/me")
-      .then(res => res.json())
-      .then(data => {
-        setUser(data.user);
-        setChecking(false);
-        if (!data.user) router.replace("/login");
-      })
-      .catch(() => {
-        setChecking(false);
+    let mounted = true;
+    fetch("/api/me").then(r => r.json()).then(userData => {
+      if (!mounted) return;
+      if (!userData.user) {
         router.replace("/login");
-      });
+        return;
+      }
+      setUser(userData.user);
+      setConfig({ ...chatConfig }); // încarcă config-ul local, cu sinonime incluse
+      setChecking(false);
+    });
+    return () => { mounted = false };
   }, [router]);
 
-  if (checking || !config)
-    return <div className="dashboard-container">Loading...</div>;
-
+  if (checking || !config) return <div className="dashboard-container">Loading...</div>;
   if (!user) return null;
 
   const groups = ["products", "ai", "ui", "templates", "fallback"];
 
+  // Orice editare locală modifică doar state-ul config
   const handleConfigChange = (section, key, value) => {
-    setConfig((prev) => ({
+    setConfig(prev => ({
       ...prev,
-      [section]: {
-        ...prev[section],
-        [key]: value
-      }
+      [section]: { ...prev[section], [key]: value }
     }));
     setSaved(false);
   };
 
   const handleTemplateChange = (section, key, value) => {
-    setConfig((prev) => ({
+    setConfig(prev => ({
       ...prev,
-      [section]: {
-        ...prev[section],
-        [key]: value
-      }
+      [section]: { ...prev[section], [key]: value }
     }));
     setSaved(false);
   };
 
-  // Când se apasă "Salvează configurarea"
-  const handleSave = () => {
+  // Salvează doar local, în memorie!
+  const handleSave = async () => {
     setSaved(true);
     setModalConfig({
       type: "save",
       title: "Succes",
-      content: "Configurarea a fost salvată.",
-      onOk: () => { setModalOpen(false); }
+      content:
+        "Configurarea a fost salvată local (doar în memorie, nu în fișier). Pentru modificări permanente, editează manual chatConfig.js.",
+      onOk: () => setModalOpen(false)
     });
     setModalOpen(true);
-    // TODO: Salvezi în backend aici (de implementat)
   };
 
-  const handleOverlay = () => setSidebarOpen(false);
-
-  // Când se apasă "Logout"
+  // LOGOUT cu confirmare
   const handleLogout = () => {
     setModalConfig({
       type: "logout",
@@ -360,6 +347,10 @@ export default function Dashboard() {
     setModalOpen(true);
   };
 
+  // Overlay sidebar mobile
+  const handleOverlay = () => setSidebarOpen(false);
+
+  // === RENDER ===
   return (
     <div className="dashboard-main">
       <Modal
@@ -416,7 +407,6 @@ export default function Dashboard() {
       >
         {modalConfig.content}
       </Modal>
-
       <div
         className={
           "dashboard-overlay" + (sidebarOpen ? " visible" : "")
@@ -452,7 +442,6 @@ export default function Dashboard() {
               ? handleTemplateChange
               : handleConfigChange
           }
-          saved={saved}
         />
       </div>
     </div>

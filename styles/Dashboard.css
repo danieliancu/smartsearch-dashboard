@@ -189,7 +189,10 @@ body {
   font-size: 12px;
   margin:5px !important;
 }
-
+.containerBtn {
+  display: flex;
+  justify-content:space-between;
+}
 
 
 /* HEADER & FOOTER STYLES */
